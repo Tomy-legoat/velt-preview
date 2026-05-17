@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use PreviewEndpoints\PreviewPage;
+use PreviewJsonContract\Error\PreviewErrorType;
+use PreviewJsonContract\Http\PreviewContractResponse;
+use PreviewJsonContract\Renderer\ContractJsonRenderer;
+
+$page = new PreviewPage('Login', [
+    ['type' => 'text', 'name' => 'title', 'value' => 'Welcome'],
+], ['source' => 'auth.login']);
+
+$renderer = new ContractJsonRenderer();
+$json = $renderer->render($page);
+
+echo "Success payload:\n";
+echo $json . "\n\n";
+
+$sessionNotFound = PreviewContractResponse::error(PreviewErrorType::SESSION_NOT_FOUND);
+$sessionExpired = PreviewContractResponse::error(PreviewErrorType::SESSION_EXPIRED);
+$pageNotFound = PreviewContractResponse::error(PreviewErrorType::PAGE_NOT_FOUND);
+$internal = PreviewContractResponse::error(PreviewErrorType::INTERNAL_ERROR);
+
+echo "Error payloads:\n";
+echo "404 SESSION_NOT_FOUND => " . $sessionNotFound->body . "\n";
+echo "410 SESSION_EXPIRED => " . $sessionExpired->body . "\n";
+echo "404 PAGE_NOT_FOUND => " . $pageNotFound->body . "\n";
+echo "500 INTERNAL_ERROR => " . $internal->body . "\n";

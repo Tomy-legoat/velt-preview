@@ -1,0 +1,39 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use PreviewQrCli\Exception\UnknownViewException;
+use PreviewQrCli\PreviewUrlGenerator;
+use PreviewQrCli\Repository\ArrayViewRegistry;
+use PreviewSessionStore\PreviewSessionStore;
+
+$argv = $_SERVER['argv'] ?? [];
+$command = $argv[1] ?? null;
+$view = $argv[2] ?? null;
+
+if ($command !== 'preview' || $view === null) {
+    fwrite(STDERR, "Usage: php bin/velt preview <view>\n");
+    exit(1);
+}
+
+$store = new PreviewSessionStore(__DIR__ . '/../storage');
+$registry = new ArrayViewRegistry([
+    'auth.login',
+    'home.dashboard',
+    'profile.show',
+]);
+$generator = new PreviewUrlGenerator($store, $registry, 'http://127.0.0.1:8000');
+
+try {
+    $result = $generator->createForView($view);
+    echo "Preview session created:\n";
+    echo "ID: " . $result['id'] . "\n";
+    echo "URL: " . $result['url'] . "\n";
+    echo "QR payload: " . $result['qrPayload'] . "\n";
+    echo "Note: QR image generation can be added later with a dedicated library.\n";
+    exit(0);
+} catch (UnknownViewException $e) {
+    fwrite(STDERR, "Error: " . $e->getMessage() . "\n");
+    exit(2);
+}

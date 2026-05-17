@@ -1,0 +1,23 @@
+{
+    "name": "velt/preview-endpoints",
+    "description": "HTTP endpoints for Velt preview responses",
+    "autoload": {
+        "psr-4": {
+            "PreviewEndpoints\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../preview-session-store",
+            "options": {
+                "versions": {
+                    "velt/preview-session-store": "1.0.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "velt/preview-session-store": "*"
+    }
+}

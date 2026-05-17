@@ -1,0 +1,26 @@
+{
+    "name": "velt/preview-qr-cli",
+    "description": "CLI preview URL and QR payload generator",
+    "autoload": {
+        "psr-4": {
+            "PreviewQrCli\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../preview-session-store",
+            "options": {
+                "versions": {
+                    "velt/preview-session-store": "1.0.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "velt/preview-session-store": "*"
+    },
+    "bin": [
+        "bin/velt"
+    ]
+}
