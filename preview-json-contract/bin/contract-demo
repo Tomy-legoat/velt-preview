@@ -3,7 +3,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\PreviewPage;
 use PreviewJsonContract\Error\PreviewErrorType;
 use PreviewJsonContract\Http\PreviewContractResponse;
 use PreviewJsonContract\Renderer\ContractJsonRenderer;

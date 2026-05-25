@@ -37,6 +37,8 @@ Error payload format:
 }
 ```
 
+The HTTP layer in `preview-endpoints` now uses a dedicated `PreviewErrorResponse` helper so the same error shape is emitted for 404, 410, 405, 500 and route-not-found cases.
+
 Status mapping:
 
 - `200` success
@@ -44,6 +46,8 @@ Status mapping:
 - `410` session expired
 - `404` page not found
 - `500` internal error
+
+The HTTP layer can now distinguish an expired session from a missing one by returning `410 SESSION_EXPIRED` when `expiresAt` is reached.
 
 ## Files
 

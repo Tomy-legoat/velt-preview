@@ -1,0 +1,57 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "aebdad85baf2ce59141cd2e27bf84c2e",
+    "packages": [
+        {
+            "name": "velt/preview-contracts",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../preview-contracts",
+                "reference": "92f652a7d6f55b0689bfa16bf6bd81fd263b964b"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PreviewContracts\\": "src/"
+                }
+            },
+            "description": "Shared contracts for Velt preview modules",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "velt/preview-session-store",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../preview-session-store",
+                "reference": "93393a3f7b006ece79721629de79b4a5a9595b62"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PreviewSessionStore\\": "src/"
+                }
+            },
+            "description": "Mini store de sessions preview pour Velt",
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

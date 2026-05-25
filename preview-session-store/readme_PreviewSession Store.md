@@ -5,7 +5,8 @@ Ce module minimal fournit un stockage de sessions preview en fichier JSON pour l
 Fichiers créés:
 
 - `src/PreviewSession.php` — modèle de donnée `id`, `view`, `url`, `createdAt`.
-- `src/PreviewSessionStore.php` — lecture/écriture JSON, création, lecture, suppression.
+- `src/PreviewSession.php` — modèle de donnée `id`, `view`, `url`, `createdAt`, `expiresAt`.
+- `src/PreviewSessionStore.php` — lecture/écriture JSON, création, lecture, suppression, purge des expirées.
 - `src/Exceptions/PreviewSessionNotFoundException.php` — exception documentée pour `getOrFail()`.
 - `tests/PreviewSessionStoreTest.php` — tests basiques utilisant le filesystem temporaire.
 - `composer.json` — autoload PSR-4.
@@ -42,3 +43,4 @@ Remarques:
 - Les IDs sont générés via `bin2hex(random_bytes(6))` (non prédictible, courts).
 - Le format du fichier JSON est une map d'objets indexés par `id` pour garder le fichier lisible.
 - `get()` retourne `null` si absent; `getOrFail()` jette `PreviewSessionNotFoundException`.
+- `create()` accepte un TTL optionnel en secondes pour ajouter `expiresAt`.

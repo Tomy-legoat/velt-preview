@@ -3,8 +3,9 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use PreviewEndpoints\Http\PreviewController;
+use PreviewEndpoints\Http\PreviewErrorResponse;
 use PreviewEndpoints\Http\Request;
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\PreviewPage;
 use PreviewEndpoints\Renderer\ArrayJsonRenderer;
 use PreviewEndpoints\Repository\ArrayPageRepository;
 use PreviewSessionStore\PreviewSessionStore;
@@ -24,7 +25,7 @@ $controller = new PreviewController($store, $repository, new ArrayJsonRenderer()
 if ($request->method !== 'GET') {
     http_response_code(405);
     header('Content-Type: application/json');
-    echo json_encode(['error' => ['code' => 'METHOD_NOT_ALLOWED', 'message' => 'Method not allowed']], JSON_UNESCAPED_SLASHES);
+    echo json_encode(PreviewErrorResponse::methodNotAllowed()->toArray(), JSON_UNESCAPED_SLASHES);
     exit;
 }
 
@@ -33,9 +34,7 @@ if (preg_match('#^/api/session/([^/]+)$#', $request->path, $matches)) {
 } elseif (preg_match('#^/api/preview/([^/]+)$#', $request->path, $matches)) {
     $response = $controller->preview($matches[1]);
 } else {
-    $response = new \PreviewEndpoints\Http\Response(404, json_encode([
-        'error' => ['code' => 'NOT_FOUND', 'message' => 'Route not found'],
-    ], JSON_UNESCAPED_SLASHES) ?: '{}', ['Content-Type' => 'application/json']);
+    $response = new \PreviewEndpoints\Http\Response(404, json_encode(PreviewErrorResponse::notFound()->toArray(), JSON_UNESCAPED_SLASHES) ?: '{}', ['Content-Type' => 'application/json']);
 }
 
 http_response_code($response->statusCode);

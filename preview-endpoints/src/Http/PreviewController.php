@@ -2,9 +2,9 @@
 
 namespace PreviewEndpoints\Http;
 
-use PreviewEndpoints\Contracts\JsonRendererInterface;
-use PreviewEndpoints\Contracts\PageRepositoryInterface;
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\Contracts\JsonRendererInterface;
+use PreviewContracts\Contracts\PageRepositoryInterface;
+use PreviewContracts\PreviewPage;
 use PreviewSessionStore\PreviewSessionStore;
 
 class PreviewController
@@ -20,12 +20,11 @@ class PreviewController
     {
         $session = $this->sessionStore->get($id);
         if ($session === null) {
-            return Response::json([
-                'error' => [
-                    'code' => 'SESSION_NOT_FOUND',
-                    'message' => 'Preview session not found',
-                ],
-            ], 404);
+            return Response::json(PreviewErrorResponse::sessionNotFound()->toArray(), 404);
+        }
+
+        if ($session->isExpired()) {
+            return Response::json(PreviewErrorResponse::sessionExpired()->toArray(), 410);
         }
 
         return Response::json($session->toArray(), 200);
@@ -35,22 +34,16 @@ class PreviewController
     {
         $session = $this->sessionStore->get($id);
         if ($session === null) {
-            return Response::json([
-                'error' => [
-                    'code' => 'SESSION_NOT_FOUND',
-                    'message' => 'Preview session not found',
-                ],
-            ], 404);
+            return Response::json(PreviewErrorResponse::sessionNotFound()->toArray(), 404);
+        }
+
+        if ($session->isExpired()) {
+            return Response::json(PreviewErrorResponse::sessionExpired()->toArray(), 410);
         }
 
         $page = $this->pageRepository->findByView($session->view);
         if ($page === null) {
-            return Response::json([
-                'error' => [
-                    'code' => 'PAGE_NOT_FOUND',
-                    'message' => 'Preview page not found',
-                ],
-            ], 404);
+            return Response::json(PreviewErrorResponse::pageNotFound()->toArray(), 404);
         }
 
         return new Response(200, $this->renderer->render($page), ['Content-Type' => 'application/json']);

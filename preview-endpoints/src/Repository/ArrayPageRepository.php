@@ -2,8 +2,8 @@
 
 namespace PreviewEndpoints\Repository;
 
-use PreviewEndpoints\Contracts\PageRepositoryInterface;
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\Contracts\PageRepositoryInterface;
+use PreviewContracts\PreviewPage;
 
 class ArrayPageRepository implements PageRepositoryInterface
 {

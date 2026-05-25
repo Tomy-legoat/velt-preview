@@ -24,10 +24,20 @@
                     "velt/preview-session-store": "1.0.0"
                 }
             }
+        },
+        {
+            "type": "path",
+            "url": "../preview-contracts",
+            "options": {
+                "versions": {
+                    "velt/preview-contracts": "1.0.0"
+                }
+            }
         }
     ],
     "require": {
-        "velt/preview-endpoints": "*"
+        "velt/preview-endpoints": "*",
+        "velt/preview-contracts": "*"
     },
     "bin": [
         "bin/contract-demo"

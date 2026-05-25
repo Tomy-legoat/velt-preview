@@ -1,0 +1,9 @@
+{
+    "472fd3d39fa6": {
+        "id": "472fd3d39fa6",
+        "view": "auth.login",
+        "url": "http://127.0.0.1:8000/api/preview/472fd3d39fa6",
+        "createdAt": "2026-05-21T12:05:06+00:00",
+        "expiresAt": null
+    }
+}

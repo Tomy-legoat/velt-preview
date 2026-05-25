@@ -15,9 +15,19 @@
                     "velt/preview-session-store": "1.0.0"
                 }
             }
+        },
+        {
+            "type": "path",
+            "url": "../preview-contracts",
+            "options": {
+                "versions": {
+                    "velt/preview-contracts": "1.0.0"
+                }
+            }
         }
     ],
     "require": {
-        "velt/preview-session-store": "*"
+        "velt/preview-session-store": "*",
+        "velt/preview-contracts": "*"
     }
 }

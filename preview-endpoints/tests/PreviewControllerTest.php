@@ -3,7 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use PreviewEndpoints\Http\PreviewController;
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\PreviewPage;
 use PreviewEndpoints\Renderer\ArrayJsonRenderer;
 use PreviewEndpoints\Repository\ArrayPageRepository;
 use PreviewSessionStore\PreviewSessionStore;
@@ -41,7 +41,7 @@ try {
     ensure($previewResponse->statusCode === 200, 'Expected preview endpoint to return 200');
     $previewBody = json_decode($previewResponse->body, true);
     ensure(is_array($previewBody), 'Expected preview response to be valid JSON');
-    ensure(($previewBody['schemaVersion'] ?? null) === 1, 'Expected schemaVersion 1');
+    ensure(($previewBody['schemaVersion'] ?? null) === '1.0', 'Expected schemaVersion 1.0');
     ensure(($previewBody['screen'] ?? null) === 'auth.login', 'Expected screen auth.login');
     ensure(count($previewBody['components'] ?? []) === 2, 'Expected 2 preview components');
 

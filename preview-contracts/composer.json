@@ -1,0 +1,10 @@
+{
+    "name": "velt/preview-contracts",
+    "description": "Shared contracts for Velt preview modules",
+    "autoload": {
+        "psr-4": {
+            "PreviewContracts\\": "src/"
+        }
+    },
+    "require": {}
+}

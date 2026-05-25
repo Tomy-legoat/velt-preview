@@ -3,7 +3,7 @@
 namespace PreviewFlowE2E;
 
 use PreviewEndpoints\Http\PreviewController;
-use PreviewEndpoints\PreviewPage;
+use PreviewContracts\PreviewPage;
 use PreviewEndpoints\Renderer\ArrayJsonRenderer;
 use PreviewEndpoints\Repository\ArrayPageRepository;
 use PreviewSessionStore\PreviewSessionStore;

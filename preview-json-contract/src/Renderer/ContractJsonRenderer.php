@@ -2,9 +2,9 @@
 
 namespace PreviewJsonContract\Renderer;
 
-use PreviewEndpoints\Contracts\JsonRendererInterface;
-use PreviewEndpoints\PreviewPage;
-use PreviewJsonContract\Contract\PreviewSchema;
+use PreviewContracts\Contracts\JsonRendererInterface;
+use PreviewContracts\PreviewPage;
+use PreviewContracts\Contract\PreviewSchema;
 
 class ContractJsonRenderer implements JsonRendererInterface
 {

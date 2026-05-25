@@ -1,0 +1,80 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "b22e5a7b19dd1ef33c4bd42e880cc7e5",
+    "packages": [
+        {
+            "name": "velt/preview-contracts",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../preview-contracts",
+                "reference": "92f652a7d6f55b0689bfa16bf6bd81fd263b964b"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PreviewContracts\\": "src/"
+                }
+            },
+            "description": "Shared contracts for Velt preview modules",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "velt/preview-endpoints",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../preview-endpoints",
+                "reference": "830c2a3cf18900672d29f434ad1fa4eb61675fdf"
+            },
+            "require": {
+                "velt/preview-contracts": "*",
+                "velt/preview-session-store": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PreviewEndpoints\\": "src/"
+                }
+            },
+            "description": "HTTP endpoints for Velt preview responses",
+            "transport-options": {
+                "relative": true
+            }
+        },
+        {
+            "name": "velt/preview-session-store",
+            "version": "1.0.0",
+            "dist": {
+                "type": "path",
+                "url": "../preview-session-store",
+                "reference": "93393a3f7b006ece79721629de79b4a5a9595b62"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PreviewSessionStore\\": "src/"
+                }
+            },
+            "description": "Mini store de sessions preview pour Velt",
+            "transport-options": {
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

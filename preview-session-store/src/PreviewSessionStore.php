@@ -60,13 +60,20 @@ class PreviewSessionStore
         rename($tmp, $this->filePath);
     }
 
-    public function create(string $view, string $baseUrl = ''): PreviewSession
+    public function create(string $view, string $baseUrl = '', ?int $ttlSeconds = null): PreviewSession
     {
         $id = bin2hex(random_bytes(6));
         $createdAt = (new \DateTimeImmutable())->format(DATE_ATOM);
+        $expiresAt = null;
+
+        if ($ttlSeconds !== null && $ttlSeconds > 0) {
+            $expiresAt = (new \DateTimeImmutable())
+                ->add(new \DateInterval('PT' . $ttlSeconds . 'S'))
+                ->format(DATE_ATOM);
+        }
         $url = $baseUrl === '' ? '/api/preview/' . $id : rtrim($baseUrl, '/') . '/api/preview/' . $id;
 
-        $session = new PreviewSession($id, $view, $url, $createdAt);
+        $session = new PreviewSession($id, $view, $url, $createdAt, $expiresAt);
 
         $data = $this->readData();
         $data[$id] = $session->toArray();
@@ -83,6 +90,27 @@ class PreviewSessionStore
         }
 
         return PreviewSession::fromArray($data[$id]);
+    }
+
+    public function purgeExpired(): int
+    {
+        $data = $this->readData();
+        $now = new \DateTimeImmutable();
+        $removed = 0;
+
+        foreach ($data as $id => $item) {
+            $session = PreviewSession::fromArray($item);
+            if ($session->isExpired($now)) {
+                unset($data[$id]);
+                $removed++;
+            }
+        }
+
+        if ($removed > 0) {
+            $this->writeData($data);
+        }
+
+        return $removed;
     }
 
     public function getOrFail(string $id): PreviewSession
