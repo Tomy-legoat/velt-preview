@@ -1,0 +1,35 @@
+{
+    "name": "velt/preview-json-contract",
+    "description": "Stable preview JSON contract and normalized errors for issue 05",
+    "autoload": {
+        "psr-4": {
+            "PreviewJsonContract\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../preview-endpoints",
+            "options": {
+                "versions": {
+                    "velt/preview-endpoints": "1.0.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../preview-session-store",
+            "options": {
+                "versions": {
+                    "velt/preview-session-store": "1.0.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "velt/preview-endpoints": "*"
+    },
+    "bin": [
+        "bin/contract-demo"
+    ]
+}

@@ -1,0 +1,36 @@
+{
+    "name": "velt/preview-flow-e2e",
+    "description": "End-to-end preview flow runner for issue 04",
+    "autoload": {
+        "psr-4": {
+            "PreviewFlowE2E\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../preview-endpoints",
+            "options": {
+                "versions": {
+                    "velt/preview-endpoints": "1.0.0"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "../preview-session-store",
+            "options": {
+                "versions": {
+                    "velt/preview-session-store": "1.0.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "velt/preview-endpoints": "*",
+        "velt/preview-session-store": "*"
+    },
+    "bin": [
+        "bin/preview-flow"
+    ]
+}

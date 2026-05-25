@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use PreviewFlowE2E\PreviewFlowRunner;
+
+$storageDir = __DIR__ . '/../storage';
+$runner = new PreviewFlowRunner($storageDir);
+$report = $runner->run();
+
+echo "Preview flow report\n";
+echo "===================\n";
+echo "Happy path status: " . $report['happyPath']['status'] . "\n";
+echo "Has screen: " . ($report['happyPath']['hasScreen'] ? 'yes' : 'no') . "\n";
+echo "Has schemaVersion: " . ($report['happyPath']['hasSchemaVersion'] ? 'yes' : 'no') . "\n";
+echo "Has components: " . ($report['happyPath']['hasComponents'] ? 'yes' : 'no') . "\n";
+echo "Missing session status: " . $report['missingSession']['status'] . "\n";
+echo "Missing page status: " . $report['missingPage']['status'] . "\n\n";
+
+echo "Sample payload (happy path):\n";
+echo json_encode($report['happyPath']['payload'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";

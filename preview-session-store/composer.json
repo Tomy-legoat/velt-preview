@@ -1,0 +1,8 @@
+{
+    "name": "velt/preview-session-store",
+    "description": "Mini store de sessions preview pour Velt",
+    "autoload": {
+        "psr-4": { "PreviewSessionStore\\": "src/" }
+    },
+    "require": {}
+}
