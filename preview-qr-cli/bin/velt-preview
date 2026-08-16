@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../../vendor/autoload.php';
+
+use PreviewQrCli\Exception\UnknownViewException;
+use PreviewQrCli\PreviewUrlGenerator;
+use PreviewQrCli\QRGenerator;
+use PreviewQrCli\Repository\ArrayViewRegistry;
+use PreviewSessionStore\PreviewSessionStore;
+
+$argv = $_SERVER['argv'] ?? [];
+$command = $argv[1] ?? null;
+$view = $argv[2] ?? null;
+
+if ($command !== 'preview' || $view === null) {
+    fwrite(STDERR, "Usage: php bin/velt-preview preview <view>\n");
+    exit(1);
+}
+
+$store = new PreviewSessionStore(__DIR__ . '/../storage');
+
+$templatesPath = dirname(__DIR__, 2) . '/templates';
+$templateFile = $templatesPath . '/' . str_replace('.', '/', $view) . '.velt';
+
+if (! file_exists($templateFile)) {
+    fwrite(STDERR, "Error: Template not found: $templateFile\n");
+    fwrite(STDERR, "Available templates:\n");
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($templatesPath));
+    foreach ($iterator as $file) {
+        if ($file->isFile() && $file->getExtension() === 'velt') {
+            $relativePath = str_replace([$templatesPath . '/', '.velt'], '', $file->getPathname());
+            $viewName = str_replace('/', '.', $relativePath);
+            fwrite(STDERR, "  - $viewName\n");
+        }
+    }
+    exit(2);
+}
+
+$registry = new ArrayViewRegistry([$view]);
+$generator = new PreviewUrlGenerator($store, $registry, 'http://127.0.0.1:8000');
+
+try {
+    $result = $generator->createForView($view);
+    echo "Preview session created:\n";
+    echo "ID: " . $result['id'] . "\n";
+    echo "URL: " . $result['url'] . "\n";
+    echo "QR payload: " . $result['qrPayload'] . "\n";
+
+    $qrOutputPath = __DIR__ . '/../storage/qrcodes';
+    if (! is_dir($qrOutputPath)) {
+        mkdir($qrOutputPath, 0755, true);
+    }
+
+    $qrGenerator = new QRGenerator($qrOutputPath, 300, 'svg');
+    $qrImagePath = $qrGenerator->generate($result['url'], $result['id']);
+
+    echo "QR image: $qrImagePath\n";
+    echo "Scan this QR to preview on mobile\n";
+    exit(0);
+} catch (UnknownViewException $e) {
+    fwrite(STDERR, "Error: " . $e->getMessage() . "\n");
+    exit(2);
+}

@@ -2,6 +2,7 @@
     "name": "velt/preview",
     "description": "Module Preview pour VeltPHP - Prévisualisation mobile via QR code",
     "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "PreviewContracts\\": "preview-contracts/src/",
@@ -23,6 +24,6 @@
         "phpunit/phpunit": "^10.0"
     },
     "bin": [
-        "preview-qr-cli/bin/velt"
+        "preview-qr-cli/bin/velt-preview"
     ]
 }
