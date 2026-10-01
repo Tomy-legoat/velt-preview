@@ -43,4 +43,5 @@ Remarques:
 - Les IDs sont générés via `bin2hex(random_bytes(6))` (non prédictible, courts).
 - Le format du fichier JSON est une map d'objets indexés par `id` pour garder le fichier lisible.
 - `get()` retourne `null` si absent; `getOrFail()` jette `PreviewSessionNotFoundException`.
-- `create()` accepte un TTL optionnel en secondes pour ajouter `expiresAt`.
+- `create()` applique un TTL de 300 secondes par défaut; un TTL positif personnalisé peut être fourni.
+- Les TTL nuls ou négatifs sont rejetés par `InvalidArgumentException`.

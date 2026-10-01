@@ -13,7 +13,7 @@ require_once dirname(__DIR__, 2) . '/preview-endpoints/src/Http/PreviewErrorResp
 require_once dirname(__DIR__, 2) . '/preview-endpoints/src/Renderer/ArrayJsonRenderer.php';
 require_once dirname(__DIR__, 2) . '/preview-endpoints/src/Repository/ArrayPageRepository.php';
 require_once dirname(__DIR__, 2) . '/preview-endpoints/src/Http/PreviewController.php';
-require __DIR__ . '/../vendor/autoload.php';
+require dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 use PreviewFlowE2E\PreviewFlowRunner;
 

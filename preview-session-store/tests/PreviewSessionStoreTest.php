@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 use PreviewSessionStore\Exceptions\PreviewSessionNotFoundException;
 use PreviewSessionStore\PreviewSessionStore;
@@ -21,6 +21,18 @@ try {
 
     ensure($session->view === 'auth.login', 'Expected session view auth.login');
     ensure(strlen($session->id) >= 1, 'Expected session id to be non-empty');
+    ensure($session->expiresAt !== null, 'Expected default session TTL to set expiresAt');
+
+    $shortSession = $store->create('auth.login', 'http://127.0.0.1:8000', 1);
+    ensure($shortSession->expiresAt !== null, 'Expected custom session TTL to set expiresAt');
+
+    $invalidTtlCaught = false;
+    try {
+        $store->create('auth.login', 'http://127.0.0.1:8000', 0);
+    } catch (InvalidArgumentException) {
+        $invalidTtlCaught = true;
+    }
+    ensure($invalidTtlCaught, 'Expected non-positive TTL to be rejected');
 
     $loaded = $store->get($session->id);
     ensure($loaded !== null, 'Expected loaded session to exist');

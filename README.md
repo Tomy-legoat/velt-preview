@@ -28,7 +28,12 @@ Vue Velt déclarative
 - génération d’URL et de QR codes SVG ;
 - schéma JSON explicite avec `schemaVersion`, `screen`, `meta` et `components` ;
 - parser expérimental de fichiers `.velt` indentés et AST minimal ;
-- tests unitaires des stores, endpoints et contrats.
+- tests unitaires des stores, endpoints et contrats ;
+- **authentification de session avec signature HMAC et nonce** ;
+- **négociation de version de protocole et capabilities** ;
+- **validation stricte des origines, hôtes et tailles de payloads** ;
+- **heartbeat et reprise de session avec numéro de séquence** ;
+- **séparation claire entre transport, session et payload UI**.
 
 ## Installation
 
@@ -110,6 +115,8 @@ Le skeleton expose actuellement les routes de démonstration suivantes :
 | --- | --- | --- |
 | `GET` | `/api/preview/{id}` | retourne l’arbre UI de la session |
 | `GET` | `/api/session/{id}` | retourne les métadonnées de session |
+| `POST` | `/api/session/{id}/heartbeat` | enregistre l’activité de la session |
+| `POST` | `/api/session/{id}/resume` | reprend depuis un numéro de séquence |
 | `GET` | `/api/preview-route/{path}` | rend une route Velt connue en JSON |
 
 Les erreurs doivent conserver une forme déterministe :
@@ -126,6 +133,38 @@ Les erreurs doivent conserver une forme déterministe :
 
 Les statuts HTTP attendus sont notamment `400` pour une requête invalide, `404` pour une ressource inconnue, `410` pour une session expirée, `422` pour un payload incompatible et `500` pour une erreur serveur masquée au client.
 
+### Authentification de session
+
+Pour activer les URLs QR signées et la validation HMAC des routes Preview, définir un secret de 32 caractères minimum dans les deux processus CLI et HTTP :
+
+```powershell
+$env:PREVIEW_SESSION_SECRET = 'change-me-with-a-random-secret-of-32-chars-minimum'
+$env:PREVIEW_ALLOWED_HOSTS = '192.168.1.20,localhost,127.0.0.1'
+$env:PREVIEW_ALLOWED_ORIGINS = 'https://preview.example.test'
+php preview-qr-cli/bin/velt preview auth.login
+php -S 0.0.0.0:8000 -t preview-endpoints/public preview-endpoints/public/index.php
+```
+
+Le QR contient `session_id`, `nonce`, `timestamp`, `expires_at` et `signature`. Le serveur rejette les tokens absents, expirés, falsifiés ou déjà consommés avec `401 INVALID_SIGNATURE`. Pour un test local volontairement non authentifié, définir explicitement `PREVIEW_ALLOW_INSECURE=1`; sans ce paramètre, l’absence de secret bloque le serveur et la CLI.
+
+Les requêtes sont également contrôlées par `PREVIEW_ALLOWED_HOSTS`, `PREVIEW_ALLOWED_ORIGINS` et une limite de payload de 1 MiB. Une origine ou un hôte refusé retourne `403`; un payload trop grand retourne `413`.
+
+## Validation locale
+
+Depuis `velt-preview` :
+
+```bash
+composer dump-autoload
+vendor/bin/phpunit --configuration preview-protocol/phpunit.xml
+php preview-session-store/tests/PreviewSessionStoreTest.php
+php preview-endpoints/tests/PreviewControllerTest.php
+php preview-flow-e2e/bin/preview-flow
+```
+
+Le protocole couvre désormais la consommation unique des nonces et le store applique un TTL de 300 secondes par défaut. L’anti-rejeu reste limité à l’instance du validateur : une implémentation distribuée devra persister les nonces côté serveur.
+
+La signature, la négociation de capabilities, le heartbeat et la reprise ne sont pas encore branchés aux routes HTTP ni au client Android/Expo. Le transport HTTP conserve également un `receive()` de polling non implémenté ; ces points restent bloquants pour déclarer la Definition of Done complète.
+
 ## Architecture du dépôt
 
 | Dossier | Rôle |
@@ -136,6 +175,8 @@ Les statuts HTTP attendus sont notamment `400` pour une requête invalide, `404`
 | `preview-qr-cli/` | URL de connexion et QR SVG |
 | `preview-json-contract/` | sérialisation et validation du protocole |
 | `preview-flow-e2e/` | scénario d’intégration entre les couches |
+| `preview-protocol/` | gestion du protocole (version, capabilities, signature, validation) |
+| `preview-transport/` | séparation transport/session/payload UI |
 | `velt-ast/` | arbre syntaxique expérimental |
 | `velt-parser/` | parser expérimental du format `.velt` |
 | `velt-view/` | chargement des vues et adaptation en page Preview |
@@ -157,6 +198,81 @@ fichier .velt -> VeltParser -> AST -> VeltView -> contrat JSON
 ```
 
 Ce format n’est pas encore déclaré stable. La syntaxe PHP `.velt.php` de `velt/ui` reste la voie applicative documentée tant que le parser texte ne possède pas de grammaire formelle, de diagnostics de position et de stratégie de migration.
+
+## Authentification et protocole
+
+Le module `preview-protocol` fournit les fonctionnalités de sécurité et de négociation de protocole :
+
+### Version de protocole
+
+```php
+use PreviewProtocol\Protocol\ProtocolVersion;
+
+$version = ProtocolVersion::fromString('1.0.0');
+$isCompatible = $version->isCompatibleWith(ProtocolVersion::fromString('1.1.0'));
+```
+
+### Capabilities
+
+Les capacités définissent les fonctionnalités supportées par le client et le serveur :
+
+```php
+use PreviewProtocol\Protocol\ProtocolCapabilities;
+
+$serverCapabilities = ProtocolCapabilities::full();
+$clientCapabilities = ProtocolCapabilities::default();
+$negotiated = $serverCapabilities->negotiate($clientCapabilities);
+```
+
+### Signature de session
+
+Les sessions sont signées avec HMAC-SHA256 pour garantir l'authenticité :
+
+```php
+use PreviewProtocol\Signature\SessionSignature;
+
+$signature = new SessionSignature('your-secret-key-at-least-32-chars');
+$token = $signature->generateToken($sessionId, 300); // 5 minutes TTL
+
+// Validation
+if ($signature->validateToken($token)) {
+    // Token valide
+}
+```
+
+### Validation des requêtes
+
+Le validator contrôle les origines, hôtes et tailles de payloads :
+
+```php
+use PreviewProtocol\Validator\RequestValidator;
+
+$validator = new RequestValidator(
+    ['https://example.com'],
+    ['localhost', '127.0.0.1'],
+    1048576 // 1MB
+);
+
+$validator->validateOrigin('https://example.com');
+$validator->validateHost('localhost:8000');
+$validator->validateJsonPayload($payload);
+```
+
+### Heartbeat et reprise de session
+
+Le heartbeat maintient la connexion active et le sequence tracker permet la reprise :
+
+```php
+use PreviewProtocol\Protocol\SessionHeartbeat;
+use PreviewProtocol\Protocol\SequenceTracker;
+
+$heartbeat = new SessionHeartbeat(30, 90);
+$heartbeat->recordHeartbeat();
+
+$tracker = new SequenceTracker();
+$sequence = $tracker->nextSequence();
+$tracker->acknowledge($sequence);
+```
 
 ## QR code et connexion
 

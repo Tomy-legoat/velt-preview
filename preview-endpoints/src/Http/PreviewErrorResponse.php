@@ -41,6 +41,41 @@ class PreviewErrorResponse
         return new self('INTERNAL_ERROR', 'Internal preview error', $detail);
     }
 
+    public static function invalidSignature(?string $detail = null): self
+    {
+        return new self('INVALID_SIGNATURE', 'Preview authentication failed', $detail);
+    }
+
+    public static function invalidPayload(?string $detail = null): self
+    {
+        return new self('INVALID_PAYLOAD', 'Preview payload is invalid', $detail);
+    }
+
+    public static function protocolMismatch(?string $detail = null): self
+    {
+        return new self('PROTOCOL_MISMATCH', 'Preview protocol major version is incompatible', $detail);
+    }
+
+    public static function capabilityNegotiationFailed(?string $detail = null): self
+    {
+        return new self('CAPABILITY_NEGOTIATION_FAILED', 'Preview capabilities could not be negotiated', $detail);
+    }
+
+    public static function invalidOrigin(?string $detail = null): self
+    {
+        return new self('INVALID_ORIGIN', 'Preview origin is not allowed', $detail);
+    }
+
+    public static function invalidHost(?string $detail = null): self
+    {
+        return new self('INVALID_HOST', 'Preview host is not allowed', $detail);
+    }
+
+    public static function payloadTooLarge(?string $detail = null): self
+    {
+        return new self('PAYLOAD_TOO_LARGE', 'Preview payload is too large', $detail);
+    }
+
     /**
      * @return array{error: array{code: string, message: string, detail?: string}}
      */

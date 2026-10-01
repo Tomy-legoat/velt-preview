@@ -5,6 +5,8 @@ use PreviewSessionStore\Exceptions\PreviewSessionNotFoundException;
 
 class PreviewSessionStore
 {
+    public const DEFAULT_TTL_SECONDS = 300;
+
     private string $filePath;
 
     public function __construct(string $directory, string $filename = 'preview_sessions.json')
@@ -60,17 +62,17 @@ class PreviewSessionStore
         rename($tmp, $this->filePath);
     }
 
-    public function create(string $view, string $baseUrl = '', ?int $ttlSeconds = null): PreviewSession
+    public function create(string $view, string $baseUrl = '', ?int $ttlSeconds = self::DEFAULT_TTL_SECONDS): PreviewSession
     {
+        if ($ttlSeconds === null || $ttlSeconds <= 0) {
+            throw new \InvalidArgumentException('Session TTL must be positive');
+        }
+
         $id = bin2hex(random_bytes(6));
         $createdAt = (new \DateTimeImmutable())->format(DATE_ATOM);
-        $expiresAt = null;
-
-        if ($ttlSeconds !== null && $ttlSeconds > 0) {
-            $expiresAt = (new \DateTimeImmutable())
-                ->add(new \DateInterval('PT' . $ttlSeconds . 'S'))
-                ->format(DATE_ATOM);
-        }
+        $expiresAt = (new \DateTimeImmutable())
+            ->add(new \DateInterval('PT' . $ttlSeconds . 'S'))
+            ->format(DATE_ATOM);
         $url = $baseUrl === '' ? '/api/preview/' . $id : rtrim($baseUrl, '/') . '/api/preview/' . $id;
 
         $session = new PreviewSession($id, $view, $url, $createdAt, $expiresAt);
@@ -120,6 +122,48 @@ class PreviewSessionStore
             throw new PreviewSessionNotFoundException("Preview session not found: $id");
         }
         return $s;
+    }
+
+    public function recordHeartbeat(string $id): ?PreviewSession
+    {
+        $session = $this->get($id);
+        if ($session === null || $session->isExpired()) {
+            return $session;
+        }
+
+        $session->lastHeartbeat = time();
+        $this->save($session);
+        return $session;
+    }
+
+    public function resume(string $id, int $sequence): ?PreviewSession
+    {
+        $session = $this->get($id);
+        if ($session === null || $session->isExpired() || $sequence < 0) {
+            return null;
+        }
+
+        $currentSequence = $session->sequence ?? 0;
+        if ($sequence > $currentSequence) {
+            return null;
+        }
+
+        $session->sequence = $sequence;
+        $session->lastHeartbeat = time();
+        $this->save($session);
+        return $session;
+    }
+
+    private function save(PreviewSession $session): void
+    {
+        $data = $this->readData();
+        $data[$session->id] = $session->toArray();
+        $this->writeData($data);
+    }
+
+    public function saveSession(PreviewSession $session): void
+    {
+        $this->save($session);
     }
 
     public function delete(string $id): bool

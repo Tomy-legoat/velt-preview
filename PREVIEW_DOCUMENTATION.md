@@ -294,8 +294,10 @@ Host: localhost:8000
 
 ```json
 {
-  "error": "session_not_found",
-  "message": "Preview session not found: invalid_id"
+  "error": {
+    "code": "SESSION_NOT_FOUND",
+    "message": "Preview session not found"
+  }
 }
 ```
 
@@ -326,8 +328,10 @@ Host: localhost:8000
 
 ```json
 {
-  "error": "session_not_found",
-  "message": "Preview session not found: invalid_id"
+  "error": {
+    "code": "SESSION_NOT_FOUND",
+    "message": "Preview session not found"
+  }
 }
 ```
 
@@ -335,8 +339,10 @@ Host: localhost:8000
 
 ```json
 {
-  "error": "session_expired",
-  "message": "Preview session has expired"
+  "error": {
+    "code": "SESSION_EXPIRED",
+    "message": "Preview session expired"
+  }
 }
 ```
 
@@ -588,8 +594,10 @@ php bin/velt preview auth/login  # Incorrect
 **Erreur :**
 ```json
 {
-  "error": "session_expired",
-  "message": "Preview session has expired"
+  "error": {
+    "code": "SESSION_EXPIRED",
+    "message": "Preview session expired"
+  }
 }
 ```
 

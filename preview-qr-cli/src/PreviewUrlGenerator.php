@@ -5,13 +5,15 @@ namespace PreviewQrCli;
 use PreviewQrCli\Contracts\ViewRegistryInterface;
 use PreviewQrCli\Exception\UnknownViewException;
 use PreviewSessionStore\PreviewSessionStore;
+use PreviewProtocol\Signature\SessionSignature;
 
 class PreviewUrlGenerator
 {
     public function __construct(
         private PreviewSessionStore $sessionStore,
         private ViewRegistryInterface $viewRegistry,
-        private string $baseUrl = 'http://127.0.0.1:8000'
+        private string $baseUrl = 'http://127.0.0.1:8000',
+        private ?SessionSignature $sessionSignature = null
     ) {
     }
 
@@ -25,11 +27,21 @@ class PreviewUrlGenerator
         }
 
         $session = $this->sessionStore->create($view, $this->baseUrl);
+        $url = $session->url;
+
+        if ($this->sessionSignature !== null) {
+            $url .= '?' . http_build_query(
+                $this->sessionSignature->generateToken($session->id),
+                '',
+                '&',
+                PHP_QUERY_RFC3986
+            );
+        }
 
         return [
             'id' => $session->id,
-            'url' => $session->url,
-            'qrPayload' => $session->url,
+            'url' => $url,
+            'qrPayload' => $url,
             'view' => $session->view,
             'createdAt' => $session->createdAt,
         ];

@@ -11,6 +11,8 @@
             "PreviewQrCli\\": "preview-qr-cli/src/",
             "PreviewFlowE2E\\": "preview-flow-e2e/src/",
             "PreviewJsonContract\\": "preview-json-contract/src/",
+            "PreviewProtocol\\": "preview-protocol/src/",
+            "PreviewTransport\\": "preview-transport/src/",
             "VeltAst\\": "velt-ast/src/",
             "VeltParser\\": "velt-parser/src/",
             "VeltView\\": "velt-view/src/"

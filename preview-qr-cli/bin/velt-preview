@@ -8,6 +8,7 @@ use PreviewQrCli\PreviewUrlGenerator;
 use PreviewQrCli\QRGenerator;
 use PreviewQrCli\Repository\ArrayViewRegistry;
 use PreviewSessionStore\PreviewSessionStore;
+use PreviewProtocol\Signature\SessionSignature;
 
 $argv = $_SERVER['argv'] ?? [];
 $command = $argv[1] ?? null;
@@ -16,6 +17,12 @@ $view = $argv[2] ?? null;
 if ($command !== 'preview' || $view === null) {
     fwrite(STDERR, "Usage: php bin/velt-preview preview <view>\n");
     exit(1);
+}
+
+$secret = getenv('PREVIEW_SESSION_SECRET');
+if ((!is_string($secret) || $secret === '') && getenv('PREVIEW_ALLOW_INSECURE') !== '1') {
+    fwrite(STDERR, "Error: PREVIEW_SESSION_SECRET is required (or explicitly set PREVIEW_ALLOW_INSECURE=1 for local development).\n");
+    exit(3);
 }
 
 $store = new PreviewSessionStore(__DIR__ . '/../storage');
@@ -38,7 +45,8 @@ if (! file_exists($templateFile)) {
 }
 
 $registry = new ArrayViewRegistry([$view]);
-$generator = new PreviewUrlGenerator($store, $registry, 'http://127.0.0.1:8000');
+$signature = is_string($secret) && $secret !== '' ? new SessionSignature($secret) : null;
+$generator = new PreviewUrlGenerator($store, $registry, 'http://127.0.0.1:8000', $signature);
 
 try {
     $result = $generator->createForView($view);

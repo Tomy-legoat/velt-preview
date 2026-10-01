@@ -110,5 +110,103 @@
         "url": "http://127.0.0.1:8000/api/preview/3d9d4e27d924",
         "createdAt": "2026-06-16T21:30:07+00:00",
         "expiresAt": null
+    },
+    "88940780567d": {
+        "id": "88940780567d",
+        "view": "auth.login",
+        "url": "http://127.0.0.1:8000/api/preview/88940780567d",
+        "createdAt": "2026-10-01T09:18:44+00:00",
+        "expiresAt": "2026-10-01T09:23:44+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "cc886e7a5bce": {
+        "id": "cc886e7a5bce",
+        "view": "missing.view",
+        "url": "http://127.0.0.1:8000/api/preview/cc886e7a5bce",
+        "createdAt": "2026-10-01T09:18:44+00:00",
+        "expiresAt": "2026-10-01T09:23:44+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "6b9799ecb380": {
+        "id": "6b9799ecb380",
+        "view": "auth.login",
+        "url": "http://127.0.0.1:8000/api/preview/6b9799ecb380",
+        "createdAt": "2026-10-01T09:49:38+00:00",
+        "expiresAt": "2026-10-01T09:54:38+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "e04576f66827": {
+        "id": "e04576f66827",
+        "view": "missing.view",
+        "url": "http://127.0.0.1:8000/api/preview/e04576f66827",
+        "createdAt": "2026-10-01T09:49:38+00:00",
+        "expiresAt": "2026-10-01T09:54:38+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "dc04b2d5df90": {
+        "id": "dc04b2d5df90",
+        "view": "auth.login",
+        "url": "http://127.0.0.1:8000/api/preview/dc04b2d5df90",
+        "createdAt": "2026-10-01T10:51:00+00:00",
+        "expiresAt": "2026-10-01T10:56:00+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "9475499c7594": {
+        "id": "9475499c7594",
+        "view": "missing.view",
+        "url": "http://127.0.0.1:8000/api/preview/9475499c7594",
+        "createdAt": "2026-10-01T10:51:00+00:00",
+        "expiresAt": "2026-10-01T10:56:00+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null
+    },
+    "fd879c5146e5": {
+        "id": "fd879c5146e5",
+        "view": "auth.login",
+        "url": "http://127.0.0.1:8000/api/preview/fd879c5146e5",
+        "createdAt": "2026-10-01T11:00:58+00:00",
+        "expiresAt": "2026-10-01T11:05:58+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null,
+        "lastHeartbeat": null
+    },
+    "e970989773cc": {
+        "id": "e970989773cc",
+        "view": "missing.view",
+        "url": "http://127.0.0.1:8000/api/preview/e970989773cc",
+        "createdAt": "2026-10-01T11:00:58+00:00",
+        "expiresAt": "2026-10-01T11:05:58+00:00",
+        "nonce": null,
+        "signature": null,
+        "timestamp": null,
+        "capabilities": null,
+        "sequence": null,
+        "lastHeartbeat": null
     }
 }
